@@ -1,12 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import ApiError from "~/utils/ApiError";
+import { boardService } from "~/services/boardService";
 
 const createNew = async (req, res, next) => {
   try {
-    console.log(req.body);
-    res
-      .status(StatusCodes.CREATED)
-      .json({ message: "POST from controller: API create new board" });
+    // console.log(req.body);
+    // điều hướng data sáng service
+    const createdBoard = await boardService.createNew(req.body);
+
+    // có kết quả thì trả về phía Client
+    res.status(StatusCodes.CREATED).json(createdBoard);
   } catch (error) {
     next(
       new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
