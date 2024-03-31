@@ -4,6 +4,7 @@ import { CONNECT_DB, GET_DB, CLOSE_DB } from "~/config/mongodb";
 import exitHook from "async-exit-hook";
 import { env } from "~/config/environment";
 import { APIs_V1 } from "~/routes/v1";
+import { errorHandlingMiddleware } from "~/middlewares/errorHandlingMiddleware";
 
 const START_SERVER = () => {
   const app = express();
@@ -11,7 +12,11 @@ const START_SERVER = () => {
   //enable req.body json data
   app.use(express.json());
 
+  //use APIs v1
   app.use("/v1", APIs_V1);
+
+  //middleware xử lí lỗi tập trung
+  app.use(errorHandlingMiddleware);
 
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console

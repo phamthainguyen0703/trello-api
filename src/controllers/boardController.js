@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import ApiError from "~/utils/ApiError";
 
 const createNew = async (req, res, next) => {
   try {
@@ -7,10 +8,9 @@ const createNew = async (req, res, next) => {
       .status(StatusCodes.CREATED)
       .json({ message: "POST from controller: API create new board" });
   } catch (error) {
-    console.log(error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      errors: error.message,
-    });
+    next(
+      new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+    );
   }
 };
 
