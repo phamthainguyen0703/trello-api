@@ -17,6 +17,20 @@ const createNew = async (req, res, next) => {
   }
 };
 
+const getDetails = async (req, res, next) => {
+  try {
+    const boardId = req.params.id;
+
+    const board = await boardService.getDetails(boardId);
+    res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    next(
+      new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+    );
+  }
+};
+
 export const boardController = {
   createNew,
+  getDetails,
 };
