@@ -4,6 +4,7 @@ import { boardModel } from "~/models/boardModel";
 import ApiError from "~/utils/ApiError";
 import { slugify } from "~/utils/formatters";
 import { cloneDeep } from "lodash";
+import { date } from "joi";
 const createNew = async (reqBody) => {
   try {
     const newBoard = {
@@ -46,7 +47,21 @@ const getDetails = async (boardId) => {
   }
 };
 
+const update = async (boardId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now(),
+    };
+    const updatedData = await boardModel.update(boardId, updateData);
+    return updatedData;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const boardService = {
   createNew,
   getDetails,
+  update,
 };
