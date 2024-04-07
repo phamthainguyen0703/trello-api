@@ -17,6 +17,21 @@ const createNew = async (req, res, next) => {
   }
 };
 
+const update = async (req, res, next) => {
+  try {
+    const columnId = req.params.id;
+
+    const updatedBColumn = await columnService.update(columnId, req.body);
+
+    res.status(StatusCodes.OK).json(updatedBColumn);
+  } catch (error) {
+    next(
+      new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+    );
+  }
+};
+
 export const columnController = {
   createNew,
+  update,
 };
