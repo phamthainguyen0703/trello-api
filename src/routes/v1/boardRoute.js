@@ -15,4 +15,10 @@ Router.route("/:id")
   .get(boardController.getDetails)
   .put(boardValidation.update, boardController.update);
 
+//api move card giữa các column
+Router.route("/supports/moving_cards").put(
+  boardValidation.moveCardToDifferentColumns,
+  boardController.moveCardToDifferentColumns
+);
+
 export const boardRoute = Router;

@@ -5,6 +5,8 @@ import ApiError from "~/utils/ApiError";
 import { slugify } from "~/utils/formatters";
 import { cloneDeep } from "lodash";
 import { date } from "joi";
+import { columnModel } from "~/models/columnModel";
+import { cardModel } from "~/models/cardModel";
 const createNew = async (reqBody) => {
   try {
     const newBoard = {
@@ -34,8 +36,8 @@ const getDetails = async (boardId) => {
 
     //B2: đưa card về đúng column của nó
     resBoard.columns.forEach((column) => {
-      column.cards = resBoard.cards.filter(
-        (card) => card.columnId.toString() === column._id.toString()
+      column.cards = resBoard.cards.filter((card) =>
+        card.columnId.equals(column._id)
       );
     });
 
@@ -60,8 +62,31 @@ const update = async (boardId, reqBody) => {
   }
 };
 
+const moveCardToDifferentColumns = async (reqBody) => {
+  try {
+    // b1: cập nhật mảng cardOrderIds của column đang chứa (xóa _id card khỏi mảng)
+    await columnModel.update(reqBody.prevColumnId, {
+      cardOrderIds: reqBody.prevCardOrderIds,
+      updatedAt: Date.now(),
+    });
+    // b2: cập nhật mảng cardOrderIds của column mới tiếp theo (thêm _id vào mảng)
+    await columnModel.update(reqBody.nextColumnId, {
+      cardOrderIds: reqBody.nextCardOrderIds,
+      updatedAt: Date.now(),
+    });
+    // b3: cập nhật lại trường columnId mới của card đã kéo
+    await cardModel.update(reqBody.currentCardId, {
+      columnId: reqBody.nextColumnId,
+    });
+
+    return { updateResult: "Successfully" };
+  } catch (error) {
+    throw error;
+  }
+};
 export const boardService = {
   createNew,
   getDetails,
   update,
+  moveCardToDifferentColumns,
 };

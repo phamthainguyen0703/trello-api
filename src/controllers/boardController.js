@@ -44,8 +44,21 @@ const update = async (req, res, next) => {
   }
 };
 
+const moveCardToDifferentColumns = async (req, res, next) => {
+  try {
+    const result = await boardService.moveCardToDifferentColumns(req.body);
+
+    res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    next(
+      new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message)
+    );
+  }
+};
+
 export const boardController = {
   createNew,
   getDetails,
   update,
+  moveCardToDifferentColumns,
 };

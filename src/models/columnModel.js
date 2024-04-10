@@ -85,6 +85,12 @@ const update = async (columnId, updatedColum) => {
       }
     });
 
+    if (updatedColum.cardOrderIds) {
+      updatedColum.cardOrderIds = updatedColum.cardOrderIds.map(
+        (_id) => new ObjectId(_id)
+      );
+    }
+
     const result = await GET_DB()
       .collection(COLUMN_COLLECTION_NAME)
       .findOneAndUpdate(
