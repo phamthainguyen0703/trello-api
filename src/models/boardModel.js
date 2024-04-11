@@ -108,6 +108,21 @@ const pushColumnOrderIds = async (column) => {
     throw new Error(error);
   }
 };
+// pull(lấy columnId ra khỏi mảng ColumnOrderIds(search doc mongoDB))
+const pullColumnOrderIds = async (column) => {
+  try {
+    const result = await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        { _id: new ObjectId(column.boardId) },
+        { $pull: { columnOrderIds: new ObjectId(column._id) } },
+        { returnDocument: "after" }
+      );
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 const update = async (boardId, updateData) => {
   try {
@@ -127,7 +142,7 @@ const update = async (boardId, updateData) => {
     const result = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
       .findOneAndUpdate(
-        { _id: new ObjectId(boardId) }, 
+        { _id: new ObjectId(boardId) },
         { $set: updateData },
         { returnDocument: "after" }
       );
@@ -145,4 +160,5 @@ export const boardModel = {
   getDetails,
   pushColumnOrderIds,
   update,
+  pullColumnOrderIds,
 };
