@@ -23,12 +23,23 @@ const START_SERVER = () => {
   //middleware xử lí lỗi tập trung
   app.use(errorHandlingMiddleware);
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    // eslint-disable-next-line no-console
-    console.log(
-      `Hello ${env.AUTHOR}, server is running at http://${env.APP_HOST}:${env.APP_PORT}/`
-    );
-  });
+  if (env.BUILD_MODE === "prod") {
+    // Production (render.com)
+    app.listen(process.env.PORT, () => {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Hello ${env.AUTHOR},Production: server is running at Port:${env.PORT}/`
+      );
+    });
+  } else {
+    // Local Dev
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      // eslint-disable-next-line no-console
+      console.log(
+        `Hello ${env.AUTHOR},Local Dev: server is running at http://${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}/`
+      );
+    });
+  }
 
   // thực hiện các tác vụ clean up trước khi dừng server
 
